@@ -136,6 +136,102 @@ export default {
         }
       }
     },
+    community: {
+      "_id": "4389192fc1c887d0acbf7233207e88c2",
+      "_rev": "3433-3f68f49b847a246b4db07dcd9c5cd031",
+      "|doctype": "community",
+      "|location": "gtm-pet",
+      "community": "BENIMA VOLCAN",
+      "municipality": "SENAHU",
+      "department": "ALTA VERAPAZ",
+      "population": "120",
+      "no_light": "95",
+      "gps_latitude": "15.4659",
+      "gps_longitude": "-89.8967",
+      "gps_altitude": "",
+      "gps_accuracy": "",
+      "gps_alt_accuracy": "",
+      "leader": "",
+      "leader_telephone": "",
+      "teacher": "",
+      "teacher_telephone": "",
+      "other": "",
+      "other_telephone": "",
+      "|edited_by": "root_gt",
+      "|edited_on": "2017-08-31T18:43:45.525Z",
+      "|server_000": {
+        "dirty": false,
+        "dirty_calc": false,
+        "active_community": true,
+        "opened": "2016-05-31",
+        "closed": "",
+        "pos": "gtm-pet:pos:912142",
+        "updated": "2019-03-24",
+        "clients": 93,
+        "kingos": {
+          "Kingo - Basico": 8,
+          "Kingo - Luz": 32,
+          "Kingo - TV": 1,
+          "Kingo 15": 62,
+          "Kingo Basico": 4,
+          "Kingo Shopkeeper": 3,
+          "Kingo TV": 12
+        },
+        "urateInstall": 0.9361,
+        "urate": 0.6067,
+        "urate90": 0.5688,
+        "urate30": 0.5048,
+        "urateInstall_clients": {
+          "1": 3,
+          "2": 1,
+          "3": 14,
+          "4": 75,
+          "x": 0
+        },
+        "urate_clients": {
+          "1": 14,
+          "2": 23,
+          "3": 22,
+          "4": 34,
+          "x": 0
+        },
+        "urate90_clients": {
+          "1": 24,
+          "2": 15,
+          "3": 16,
+          "4": 38,
+          "x": 0
+        },
+        "urate30_clients": {
+          "1": 31,
+          "2": 14,
+          "3": 13,
+          "4": 35,
+          "x": 0
+        },
+        "unused_clients": {
+          "1": 26,
+          "2": 5,
+          "3": 8,
+          "4": 54,
+          "x": 0
+        },
+        "owner": "at.jaime.coc@energysupport.gt",
+        "community_groups": "service-44146,advisor-91211"
+      },
+      "|server_001": {
+      },
+      "#parent": "a2e2dc4809aa97df1206505f30bcff29",
+      "_attachments": {
+        "server_000": {
+          "content_type": "application/json",
+          "revpos": 3432,
+          "digest": "md5-mvyzVRFrG1rWAclQXGGDVw==",
+          "length": 99213,
+          "stub": true
+        }
+      }
+    },
     fields: ['type', 'old', 'new', 'accepted'],
     items: []
   }),
@@ -148,73 +244,62 @@ export default {
       let communityObject = {
         type: 'community',
         accepted: false ,
-        'old' : {
-          community: 'C',
-          area_level_1: 'D',
-          area_level_2: 'M',
+        old : {
+          community: this.community.community,
+          area_level_1: this.community.department,
+          area_level_2: this.community.municipality,
         }
       };
-      if (newClient.location.al2 && newClient.location.al1 && newClient.location.community_name) {
-
-      }
-      if ( newClient.location.community_name) {
-
-      }
+      arr.push(Object.assign(communityObject, {
+        new : {
+          community: newClient.location.community_name,
+          area_level_1: newClient.location.al1 ? newClient.location.al1.name : communityObject.old.area_level_1,
+          area_level_2: newClient.location.al2 ? newClient.location.al2.name : communityObject.old.area_level_2,
+        }
+      }));
     }
 
-    this.items =  [
-      {
-        'type': 'community',
-        'accepted': false,
-        'old': {
-          community: 'C',
-          area_level_1: 'D',
-          area_level_2: 'M',
+    if (newClient.phone) {
+      arr.push({
+        type: 'phone',
+        accepted: false ,
+        old : {
+          phone: this.client.telephone
         },
-        'new': {
-          community: 'Cn',
-          area_level_1: 'Dn',
-          area_level_2: 'Mn',
+        new : {
+          phone: newClient.phone
         }
-      },
-      {
-        'type': 'phone',
-        'accepted': false,
-        'valid': true,
-        'old': {
-          phone: '1234567890',
+      });
+    }
+
+    if (newClient.gps.customer){
+      arr.push({
+        type: 'GPS',
+        accepted: false ,
+        old : {
+          latitude: this.client.gps_latitude,
+          longitude: this.client.gps_longitude,
+          altitude: this.client.gps_altitude,
+          accuracy: this.client.gps_accuracy,
+          alt_accuracy: this.client.gps_alt_accuracy,
         },
-        'new': {
-          phone: '0987654321',
+        new : {
+          latitude: newClient.gps.customer.lat,
+          longitude: newClient.gps.customer.lng,
+          altitude: newClient.gps.customer.alt,
+          accuracy: newClient.gps.customer.gpsAccuracy,
+          alt_accuracy: newClient.gps.customer.altAccuracy,
         }
-      },
-      {
-        'type': 'GPS',
-        'accepted': false,
-        'valid': false,
-        'old': {
-          "latitude": 15.465941600000000733,
-          "longitude": -89.896152299999997126,
-          "altitude": "957.5",
-          "accuracy": 32.100000000000001421,
-          "alt_accuracy": 0,
-        },
-        'new': {
-          "latitude": 15.465941600000000733,
-          "longitude": -89.896152299999997126,
-          "altitude": "957.5",
-          "accuracy": 32.100000000000001421,
-          "alt_accuracy": 0,
-        }
-      }
-    ];
-    Map();
-    new mapboxgl.Marker({color:'red'})
-      .setLngLat([-89.896152299999997126, 15.465941600000000733])
-      .addTo(map);
-    new mapboxgl.Marker({color:'blue'})
-      .setLngLat([-89.94784740685245, 15.465941600000000])
-      .addTo(map);
+      });
+      Map();
+      new mapboxgl.Marker({color:'blue'})
+        .setLngLat([Number(newClient.gps.customer.lng), Number(newClient.gps.customer.lat)])
+        .addTo(map);
+      new mapboxgl.Marker({color:'red'})
+        .setLngLat([Number(this.client.gps_longitude), Number(this.client.gps_latitude)])
+        .addTo(map);
+    }
+    this.items = arr;
   }
 }
 

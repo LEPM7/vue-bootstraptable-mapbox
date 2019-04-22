@@ -68,6 +68,10 @@
 
                 </b-card-body>
             </b-card>
+            <div style="text-align: right">
+                <b-button variant="warning" style="padding: 10px;margin: 5px;">Cancelar</b-button>
+                <b-button variant="success" style="padding: 10px;margin: 5px;" v-on:click="save">Procesar</b-button>
+            </div>
         </div>
     </div>
 </template>

@@ -1,5 +1,8 @@
 import mapboxgl from 'mapbox-gl';
+import Vue from 'vue';
+import config from './config.json';
 let map;
+
 export default {
   name: 'app',
   data: () => ({
@@ -219,8 +222,7 @@ export default {
         "owner": "at.jaime.coc@energysupport.gt",
         "community_groups": "service-44146,advisor-91211"
       },
-      "|server_001": {
-      },
+      "|server_001": {},
       "#parent": "a2e2dc4809aa97df1206505f30bcff29",
       "_attachments": {
         "server_000": {
@@ -235,23 +237,62 @@ export default {
     fields: ['type', 'old', 'new', 'accepted'],
     items: []
   }),
+  methods: {
+    save() {
+      let data = {};
+      this.items
+        .filter((v) => v.accepted)
+        .forEach((v) => {
+          switch (v.type) {
+            case 'GPS':
+              data = {
+                ...data, ...({
+                  "gps_latitude": Number(v.new.latitude),
+                  "gps_longitude": Number(v.new.longitude),
+                  "gps_altitude": Number(v.new.altitude),
+                  "gps_accuracy": Number(v.new.accuracy),
+                  "gps_alt_accuracy": Number(v.new.alt_accuracy),
+                })
+              };
+              break;
+            case 'phone':
+              data = {...data, telephone: v.new.phone};
+              break;
+          }
+        });
+
+      let username = config.couchbase.username;
+      let password = config.couchbase.password;
+      let url = config.couchbase.endpoints.updateCustomer + this.client._id;
+      Vue.axios({
+        method: 'put',
+        url,
+        auth: {
+          username,
+          password,
+        },
+        data,
+        dataType: 'json',
+        contentType: 'application/json',
+      }).then((r) => console.log(r))
+        .catch((err) => console.error(err))
+    }
+  },
   mounted() {
     let arr = [];
     let newClient = this.newClient;
-    //community
-    // ? que pasa con el ID de la comunidad
     if (newClient.location) {
       let communityObject = {
         type: 'community',
-        accepted: false ,
-        old : {
+        accepted: false,
+        old: {
           community: this.community.community,
           area_level_1: this.community.department,
           area_level_2: this.community.municipality,
         }
       };
       arr.push(Object.assign(communityObject, {
-        new : {
+        new: {
           community: newClient.location.community_name,
           area_level_1: newClient.location.al1 ? newClient.location.al1.name : communityObject.old.area_level_1,
           area_level_2: newClient.location.al2 ? newClient.location.al2.name : communityObject.old.area_level_2,
@@ -262,33 +303,33 @@ export default {
     if (newClient.phone) {
       arr.push({
         type: 'phone',
-        accepted: false ,
-        old : {
+        accepted: false,
+        old: {
           phone: this.client.telephone
         },
-        new : {
+        new: {
           phone: newClient.phone
         }
       });
     }
 
     Map();
-    new mapboxgl.Marker({color:'red'})
+    new mapboxgl.Marker({color: 'red'})
       .setLngLat([Number(this.client.gps_longitude), Number(this.client.gps_latitude)])
       .addTo(map);
-
-    if (newClient.gps.customer){
+    map.flyTo({center:[Number(this.client.gps_longitude), Number(this.client.gps_latitude)]})
+    if (newClient.gps.customer) {
       arr.push({
         type: 'GPS',
-        accepted: false ,
-        old : {
+        accepted: false,
+        old: {
           latitude: this.client.gps_latitude,
           longitude: this.client.gps_longitude,
           altitude: this.client.gps_altitude,
           accuracy: this.client.gps_accuracy,
           alt_accuracy: this.client.gps_alt_accuracy,
         },
-        new : {
+        new: {
           latitude: newClient.gps.customer.lat,
           longitude: newClient.gps.customer.lng,
           altitude: newClient.gps.customer.alt,
@@ -296,20 +337,20 @@ export default {
           alt_accuracy: newClient.gps.customer.altAccuracy,
         }
       });
-      new mapboxgl.Marker({color:'blue'})
+      new mapboxgl.Marker({color: 'blue'})
         .setLngLat([Number(newClient.gps.customer.lng), Number(newClient.gps.customer.lat)])
         .addTo(map);
     }
     this.items = arr;
-  }
+  },
 }
 
 function Map() {
-
+  mapboxgl.accessToken = config.mapbox.accessToken;
   map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/navigation-guidance-day-v4',
-    zoom: 7.5,
+    zoom: 8.5,
     center: [-89.94784740685245, 16.828651102774828]
   });
 }

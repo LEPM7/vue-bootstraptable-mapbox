@@ -272,6 +272,11 @@ export default {
       });
     }
 
+    Map();
+    new mapboxgl.Marker({color:'red'})
+      .setLngLat([Number(this.client.gps_longitude), Number(this.client.gps_latitude)])
+      .addTo(map);
+
     if (newClient.gps.customer){
       arr.push({
         type: 'GPS',
@@ -291,12 +296,8 @@ export default {
           alt_accuracy: newClient.gps.customer.altAccuracy,
         }
       });
-      Map();
       new mapboxgl.Marker({color:'blue'})
         .setLngLat([Number(newClient.gps.customer.lng), Number(newClient.gps.customer.lat)])
-        .addTo(map);
-      new mapboxgl.Marker({color:'red'})
-        .setLngLat([Number(this.client.gps_longitude), Number(this.client.gps_latitude)])
         .addTo(map);
     }
     this.items = arr;

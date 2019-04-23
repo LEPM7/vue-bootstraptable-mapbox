@@ -136,6 +136,13 @@ export default {
           "digest": "md5-2aPo6+HWPc+97MGAxSaw0A==",
           "length": 22206,
           "stub": true
+        },
+        "contract": {
+          "content_type": "image/jpeg",
+          "revpos": 1,
+          "digest": "md5-2aPo6+HWPc+97MGAxSaw0A==",
+          "length": 22206,
+          "stub": true
         }
       }
     },
@@ -235,10 +242,12 @@ export default {
       }
     },
     fields: ['type', 'old', 'new', 'accepted'],
-    items: []
+    items: [],
+    mediaFields: [],
+    mediaItems: [],
   }),
   methods: {
-    save() {
+    save () {
       let data = {};
       this.items
         .filter((v) => v.accepted)
@@ -276,9 +285,21 @@ export default {
         contentType: 'application/json',
       }).then((r) => console.log(r))
         .catch((err) => console.error(err))
+    },
+    createMedia (mediaObject = {}){
+      let mediaItems = {};
+      Object.keys(mediaObject).forEach(mediaKey => {
+        let normalizeKey = mediaKey.substring(11);
+        if(!mediaItems[normalizeKey]) mediaItems[normalizeKey] = [];
+        let objectToShow = {};
+        objectToShow[mediaKey]=mediaObject[mediaKey];
+        mediaItems[normalizeKey].push(objectToShow);
+      });
+      return mediaItems;
     }
   },
   mounted() {
+    //text and gps items
     let arr = [];
     let newClient = this.newClient;
     if (newClient.location) {
@@ -299,7 +320,6 @@ export default {
         }
       }));
     }
-
     if (newClient.phone) {
       arr.push({
         type: 'phone',
@@ -312,7 +332,6 @@ export default {
         }
       });
     }
-
     Map();
     new mapboxgl.Marker({color: 'red'})
       .setLngLat([Number(this.client.gps_longitude), Number(this.client.gps_latitude)])
@@ -342,6 +361,22 @@ export default {
         .addTo(map);
     }
     this.items = arr;
+    // mediaItems
+    let mediaArr = [];
+    let existentMedia = this.createMedia(this.client.media);
+    if (newClient._attachments){
+      for (let media in newClient._attachments){
+        let newObject = {};
+        newObject[media] = newClient._attachments[media];
+        mediaArr.push({
+          type: media,
+          accepted: false,
+          old: existentMedia[media],
+          new:[newObject]
+        });
+      }
+      this.mediaItems = mediaArr;
+    }
   },
 }
 

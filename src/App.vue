@@ -65,7 +65,34 @@
             <b-card>
                 <h3><font-awesome-icon icon="image" style="font-size:0.8em" />&nbsp;Fotografias</h3>
                 <b-card-body>
-
+                    <b-table :items="mediaItems" :fields="fields" >
+                        <template slot="old" slot-scope="data">
+                            <span v-for="picture of data.item.old" style="margin:10px">
+                                <b-button v-for="(value, key) in picture" variant="default" style="font-size: 1.5em">
+                                    <font-awesome-icon icon="expand-arrows-alt"/>&nbsp;{{key}}
+                                </b-button>
+                            </span>
+                        </template>
+                        <template slot="new" slot-scope="data">
+                            <span v-for="picture of data.item.new" style="margin:10px">
+                                <b-button v-for="(value, key) in picture" variant="default" style="font-size: 1.5em">
+                                    <font-awesome-icon icon="expand-arrows-alt"/>&nbsp;{{key}}
+                                </b-button>
+                            </span>
+                        </template>
+                        <template slot="accepted" slot-scope="data">
+                            <button style="padding:5px 15px;background:rgb(0,164,0);color:white;font-size:1em;outline:none;border:0;border-radius:5px;"
+                                    v-if="mediaItems[data.index].accepted"
+                                    @click="mediaItems[data.index].accepted = !mediaItems[data.index].accepted">
+                                <font-awesome-icon  :icon="['far', 'check-square']"/>
+                            </button>
+                            <button style="padding:5px 15px;background:none;font-size:1em;outline:none;border:0;;border-radius:5px;"
+                                    v-if="!mediaItems[data.index].accepted"
+                                    @click="mediaItems[data.index].accepted = !mediaItems[data.index].accepted">
+                                <font-awesome-icon :icon="['far', 'square']" />
+                            </button>
+                        </template>
+                    </b-table>
                 </b-card-body>
             </b-card>
             <div style="text-align: right">

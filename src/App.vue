@@ -68,14 +68,18 @@
                     <b-table :items="mediaItems" :fields="fields" >
                         <template slot="old" slot-scope="data">
                             <span v-for="picture of data.item.old" style="margin:10px">
-                                <b-button v-for="(value, key) in picture" variant="default" style="font-size: 1.5em">
+                                <b-button v-for="(value, key) in picture"
+                                          @click="openModal(value)"
+                                          variant="default"
+                                          style="font-size: 1em">
                                     <font-awesome-icon icon="expand-arrows-alt"/>&nbsp;{{key}}
                                 </b-button>
                             </span>
                         </template>
                         <template slot="new" slot-scope="data">
                             <span v-for="picture of data.item.new" style="margin:10px">
-                                <b-button v-for="(value, key) in picture" variant="default" style="font-size: 1.5em">
+                                <b-button v-for="(value, key) in picture" variant="default" style="font-size: 1em"
+                                          @click="openModal(value)">
                                     <font-awesome-icon icon="expand-arrows-alt"/>&nbsp;{{key}}
                                 </b-button>
                             </span>
@@ -100,6 +104,9 @@
                 <b-button variant="success" style="padding: 10px;margin: 5px;" v-on:click="save">Procesar</b-button>
             </div>
         </div>
+        <b-modal ref="image-modal" size="lg">
+            <img :src="modalImageUrl" style="width: 100%; height: auto">
+        </b-modal>
     </div>
 </template>
 <script src="./app.js"></script>

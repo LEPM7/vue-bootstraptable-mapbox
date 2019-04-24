@@ -1,14 +1,25 @@
 import mapboxgl from 'mapbox-gl';
 import Vue from 'vue';
 import config from './config.json';
+import AWS from 'aws-sdk';
+import async from 'async';
+
+AWS.config.update({
+  accessKeyId: config.aws.aws_access_key_id,
+  secretAccessKey: config.aws.aws_secret_access_key
+});
+
+AWS.config.region = config.aws.aws_region;
+// https://www.publicdomainpictures.net/pictures/20000/nahled/funny-cat-871298226790TvQ.jpg
+
 let map;
 
 export default {
   name: 'app',
   data: () => ({
     client: {
-      "_id": "9467e17e25ae0b28ab21daafaed054c4",
-      "_rev": "681-6d73da06be97332a184e8ea105d206df",
+      "_id": "000081698abba8abdd7318d32a388204",
+      "_rev": "2840-13b982ee9c0f016e1accd0d707f23aa2",
       "|doctype": "client",
       "|location": "gtm-pet",
       "#community": "4389192fc1c887d0acbf7233207e88c2",
@@ -40,7 +51,7 @@ export default {
         "community": "BENIMA VOLCAN",
         "municipality": "SENAHU",
         "department": "ALTA VERAPAZ",
-        "opened": "2017-08-30",
+        "opened": "2016-11-08",
         "closed": "",
         "models": "Kingo 15",
         "last_code": "2019-01-07",
@@ -58,7 +69,7 @@ export default {
         "days_not_bought": 1,
         "kingo_installs": {
           "Kingo 15": [
-            "2017-08-30"
+            "2016-11-08"
           ]
         },
         "kingo_swaps": {},
@@ -67,18 +78,18 @@ export default {
         "client_auto_groups": "auto-active-active,auto-urate-total-2,auto-urate-90-2,auto-urate-30-2,auto-urate-install-4,auto-unused-4,auto-unused-codes,auto-kingo-15,auto-opened-2017,auto-opened-2017-08,auto-opened-2017-q3,auto-opened-2017-h2"
       },
       "media": {
-        "2017-08-30-kingo": "9467e17e25ae0b28ab21daafaed054c4/2017-08-30-kingo.jpeg",
-        "2017-08-30-house": "9467e17e25ae0b28ab21daafaed054c4/2017-08-30-house.jpeg",
-        "2017-08-30-id2": "9467e17e25ae0b28ab21daafaed054c4/2017-08-30-id2.jpeg",
-        "2017-08-30-id1": "9467e17e25ae0b28ab21daafaed054c4/2017-08-30-id1.jpeg",
-        "2017-08-30-contract2": "9467e17e25ae0b28ab21daafaed054c4/2017-08-30-contract2.jpeg",
-        "2017-08-30-contract": "9467e17e25ae0b28ab21daafaed054c4/2017-08-30-contract.jpeg",
-        "2019-03-16-house": "9467e17e25ae0b28ab21daafaed054c4/2019-03-16-house.jpeg",
-        "2019-03-16-kingo": "9467e17e25ae0b28ab21daafaed054c4/2019-03-16-kingo.jpeg",
-        "2019-03-16-id2": "9467e17e25ae0b28ab21daafaed054c4/2019-03-16-id2.jpeg",
-        "2019-03-16-id1": "9467e17e25ae0b28ab21daafaed054c4/2019-03-16-id1.jpeg",
-        "2019-03-16-contract2": "9467e17e25ae0b28ab21daafaed054c4/2019-03-16-contract2.jpeg",
-        "2019-03-16-contract": "9467e17e25ae0b28ab21daafaed054c4/2019-03-16-contract.jpeg"
+        "2016-11-08-kingo": "000081698abba8abdd7318d32a388204/2016-11-08-kingo.jpeg",
+        "2016-11-08-house": "000081698abba8abdd7318d32a388204/2016-11-08-house.jpeg",
+        "2016-11-08-id2": "000081698abba8abdd7318d32a388204/2016-11-08-id2.jpeg",
+        "2016-11-08-id1": "000081698abba8abdd7318d32a388204/2016-11-08-id1.jpeg",
+        "2016-11-08-contract2": "000081698abba8abdd7318d32a388204/2016-11-08-contract2.jpeg",
+        "2016-11-08-contract": "000081698abba8abdd7318d32a388204/2016-11-08-contract.jpeg",
+        "2019-03-16-house": "000081698abba8abdd7318d32a388204/2019-03-16-house.jpeg",
+        "2019-03-16-kingo": "000081698abba8abdd7318d32a388204/2019-03-16-kingo.jpeg",
+        "2019-03-16-id2": "000081698abba8abdd7318d32a388204/2019-03-16-id2.jpeg",
+        "2019-03-16-id1": "000081698abba8abdd7318d32a388204/2019-03-16-id1.jpeg",
+        "2019-03-16-contract2": "000081698abba8abdd7318d32a388204/2019-03-16-contract2.jpeg",
+        "2019-03-16-contract": "000081698abba8abdd7318d32a388204/2019-03-16-contract.jpeg"
       },
       "|server_001": {
         "kingo_pickups": {}
@@ -86,6 +97,7 @@ export default {
       "address": "",
       "_attachments": {
         "server_000": {
+          "follows": true,
           "content_type": "application/json",
           "revpos": 660,
           "digest": "md5-MKvm0Os7jqXYIDQP7ClpEA==",
@@ -129,15 +141,14 @@ export default {
         },
         "community_name": "Aldea punta rieles 2"
       },
+      "media": {
+        "2019-03-16-house": "000081698abba8abdd7318d32a388204/2019-03-16-house.jpeg",
+        "2019-03-16-kingo": "000081698abba8abdd7318d32a388204/2019-03-16-kingo.jpeg",
+        "2019-03-16-contract": "000081698abba8abdd7318d32a388204/2019-03-16-contract.jpeg"
+      },
       "_attachments": {
         "kingo": {
-          "content_type": "image/jpeg",
-          "revpos": 1,
-          "digest": "md5-2aPo6+HWPc+97MGAxSaw0A==",
-          "length": 22206,
-          "stub": true
-        },
-        "contract": {
+          "follows": true,
           "content_type": "image/jpeg",
           "revpos": 1,
           "digest": "md5-2aPo6+HWPc+97MGAxSaw0A==",
@@ -243,12 +254,13 @@ export default {
     },
     fields: ['type', 'old', 'new', 'accepted'],
     items: [],
-    mediaFields: [],
     mediaItems: [],
+    modalImageUrl: ''
   }),
   methods: {
-    save () {
+    save() {
       let data = {};
+      let _attachments = [];
       this.items
         .filter((v) => v.accepted)
         .forEach((v) => {
@@ -269,33 +281,98 @@ export default {
               break;
           }
         });
-
+      // image items
+      this.mediaItems
+        .filter((v) => v.accepted)
+        .forEach((v) => {
+          v.new.forEach((mediaObj) => {
+            for (let mk in mediaObj) {
+              if(typeof mediaObj[mk] === 'object') {
+                _attachments.push(mk);
+              } else if (typeof mediaObj[mk] === 'string'){
+                if(!data.media) data.media = {...this.client.media};
+                data.media[mk] = mediaObj[mk];
+              }
+            }
+          });
+        });
+      //save in db
       let username = config.couchbase.username;
       let password = config.couchbase.password;
       let url = config.couchbase.endpoints.updateCustomer + this.client._id;
-      Vue.axios({
-        method: 'put',
-        url,
-        auth: {
-          username,
-          password,
-        },
-        data,
-        dataType: 'json',
-        contentType: 'application/json',
-      }).then((r) => console.log(r))
-        .catch((err) => console.error(err))
+      console.log(_attachments);
+      this.saveAttachments(_attachments).then(() =>{
+        Vue.axios({
+          method: 'put',
+          url,
+          auth: {
+            username,
+            password,
+          },
+          data,
+          dataType: 'json',
+          contentType: 'application/json',
+        }).then((r) => console.log(r))
+          .catch((err) => console.error(err));
+      });
+
     },
-    createMedia (mediaObject = {}){
+    createMedia(mediaObject = {}, attachmentObject = {}) {
       let mediaItems = {};
       Object.keys(mediaObject).forEach(mediaKey => {
         let normalizeKey = mediaKey.substring(11);
-        if(!mediaItems[normalizeKey]) mediaItems[normalizeKey] = [];
+        if (!mediaItems[normalizeKey]) mediaItems[normalizeKey] = [];
         let objectToShow = {};
-        objectToShow[mediaKey]=mediaObject[mediaKey];
+        objectToShow[mediaKey] = mediaObject[mediaKey];
         mediaItems[normalizeKey].push(objectToShow);
       });
+      Object.keys(attachmentObject)
+        .filter(v => attachmentObject[v].content_type === 'image/jpeg')
+        .forEach(attachment => {
+          if (!mediaItems[attachment]) mediaItems[attachment] = [];
+          let objectToShow = {};
+          objectToShow[attachment] = attachmentObject[attachment];
+          mediaItems[attachment].push(objectToShow);
+        });
       return mediaItems;
+    },
+    openModal(url) {
+      this.modalImageUrl = 'https://www.publicdomainpictures.net/pictures/20000/nahled/funny-cat-871298226790TvQ.jpg';
+      this.$refs['image-modal'].show();
+    },
+    saveAttachments(attachments){
+      return new Promise(((resolve, reject) => {
+        async.eachSeries(attachments,  (attachment, cb) => {
+            let getUrl = `${config.couchbase.endpoints.maindb}${this.newClient._id}/${attachment}`;
+            let xhrGET = new XMLHttpRequest();
+            xhrGET.open('GET', getUrl, true);
+            xhrGET.responseType = 'blob';
+            xhrGET.withCredentials = true;
+            xhrGET.onload =  (_) => {
+              let blob = xhrGET.response;
+              if (blob) {
+                let putUrl =
+                  `${config.couchbase.endpoints.maindb}${this.client._id}/${(new Date()).toJSON().split('T')[0]}-${attachment}?rev=${this.client._rev}`;
+                let xhrPUT = new XMLHttpRequest();
+                xhrPUT.open('PUT', putUrl, true);
+                xhrPUT.withCredentials = true;
+                xhrPUT.onload = (_) =>{
+                  cb();
+                };
+                xhrPUT.send(blob);
+              }
+            };
+            xhrGET.send(null);
+          },
+          (error) => {
+            if (error) {
+              console.log(error);
+              reject()
+            } else {
+              resolve();
+            }
+          });
+      }))
     }
   },
   mounted() {
@@ -336,7 +413,7 @@ export default {
     new mapboxgl.Marker({color: 'red'})
       .setLngLat([Number(this.client.gps_longitude), Number(this.client.gps_latitude)])
       .addTo(map);
-    map.flyTo({center:[Number(this.client.gps_longitude), Number(this.client.gps_latitude)]})
+    map.flyTo({center: [Number(this.client.gps_longitude), Number(this.client.gps_latitude)]})
     if (newClient.gps.customer) {
       arr.push({
         type: 'GPS',
@@ -363,20 +440,17 @@ export default {
     this.items = arr;
     // mediaItems
     let mediaArr = [];
-    let existentMedia = this.createMedia(this.client.media);
-    if (newClient._attachments){
-      for (let media in newClient._attachments){
-        let newObject = {};
-        newObject[media] = newClient._attachments[media];
-        mediaArr.push({
-          type: media,
-          accepted: false,
-          old: existentMedia[media],
-          new:[newObject]
-        });
-      }
-      this.mediaItems = mediaArr;
+    let existentMedia = this.createMedia(this.client.media, this.client._attachments);
+    let newClientMedia = this.createMedia(newClient.media, newClient._attachments);
+    for (let media in newClientMedia) {
+      mediaArr.push({
+        type: media,
+        accepted: false,
+        old: existentMedia[media],
+        new: newClientMedia[media]
+      });
     }
+    this.mediaItems = mediaArr;
   },
 }
 

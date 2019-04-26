@@ -4,68 +4,82 @@
             <h1>Auditoria</h1>
             <h3>{{`${client.name || ''} ${client.surname || ''}` }}</h3>
             <b-card>
-                <h3><font-awesome-icon icon="user" style="font-size:0.8em" />&nbsp;Informacion</h3>
+                <h3>
+                    <font-awesome-icon icon="user" style="font-size:0.8em"/>&nbsp;Informacion
+                </h3>
                 <b-card-body>
-                <b-table :items="items" :fields="fields" >
-                    <template slot="old" slot-scope="data">
-                        <div v-if="data.item.type === 'community'">
-                            <strong>Comunidad</strong>:<span>{{data.item.old.community}}</span><br/>
-                            <strong>Municipio</strong>:<span>{{data.item.old.area_level_2}}</span><br/>
-                            <strong>Departamento</strong>:<span>{{data.item.old.area_level_1}}</span><br/>
-                        </div>
-                        <div v-if="data.item.type === 'phone'">
-                            {{data.item.old.phone}}
-                        </div>
-                        <div v-if="data.item.type === 'GPS'">
-                            <strong>Latitud</strong>:<span>{{data.item.old.latitude}}</span><br>
-                            <strong>Longitud</strong>:<span>{{data.item.old.longitude}}</span><br>
-                            <strong>Altitud</strong>:<span>{{data.item.old.altitude}}</span><br>
-                            <strong>Precision</strong>:<span>{{data.item.old.accuracy}}</span><br>
-                            <strong>Altitud precision</strong>:<span>{{data.item.old.alt_accuracy}}</span><br>
-                        </div>
-                    </template>
-                    <template slot="new" slot-scope="data">
-                        <div v-if="data.item.type === 'community'">
-                            <strong>Comunidad</strong>:<span>{{data.item.new.community}}</span><br/>
-                            <strong>Municipio</strong>:<span>{{data.item.new.area_level_2}}</span><br/>
-                            <strong>Departamento</strong>:<span>{{data.item.new.area_level_1}}</span><br/>
-                        </div>
-                        <div v-if="data.item.type === 'phone'">
-                            {{data.item.new.phone}}
-                        </div>
-                        <div v-if="data.item.type === 'GPS'">
-                            <strong>Latitud</strong>:<span>{{data.item.new.latitude}}</span><br>
-                            <strong>Longitud</strong>:<span>{{data.item.new.longitude}}</span><br>
-                            <strong>Altitud</strong>:<span>{{data.item.new.altitude}}</span><br>
-                            <strong>Precision</strong>:<span>{{data.item.new.accuracy}}</span><br>
-                            <strong>Altitud precision</strong>:<span>{{data.item.new.alt_accuracy}}</span><br>
-                        </div>
-                    </template>
-                    <template slot="accepted" slot-scope="data">
-                        <button style="padding:5px 15px;background:rgb(0,164,0);color:white;font-size:1em;outline:none;border:0;border-radius:5px;"
-                                v-if="items[data.index].accepted"
-                                @click="items[data.index].accepted = !items[data.index].accepted">
-                            <font-awesome-icon  :icon="['far', 'check-square']"/>
-                        </button>
-                        <button style="padding:5px 15px;background:none;font-size:1em;outline:none;border:0;;border-radius:5px;"
-                                v-if="!items[data.index].accepted"
-                                @click="items[data.index].accepted = !items[data.index].accepted">
-                            <font-awesome-icon :icon="['far', 'square']" />
-                        </button>
-                    </template>
-                </b-table>
+                    <b-table :items="items" :fields="fields">
+                        <template slot="old" slot-scope="data">
+                            <div v-if="data.item.type === 'community'">
+                                <strong>Comunidad</strong>:<span>{{data.item.old.community}}</span><br/>
+                                <strong>Municipio</strong>:<span>{{data.item.old.area_level_2}}</span><br/>
+                                <strong>Departamento</strong>:<span>{{data.item.old.area_level_1}}</span><br/>
+                            </div>
+                            <div v-if="data.item.type === 'phone'">
+                                {{data.item.old.phone}}
+                            </div>
+                            <div v-if="data.item.type === 'GPS'">
+                                <strong>Latitud</strong>:<span>{{data.item.old.latitude}}</span><br>
+                                <strong>Longitud</strong>:<span>{{data.item.old.longitude}}</span><br>
+                                <strong>Altitud</strong>:<span>{{data.item.old.altitude}}</span><br>
+                                <strong>Precision</strong>:<span>{{data.item.old.accuracy}}</span><br>
+                                <strong>Altitud precision</strong>:<span>{{data.item.old.alt_accuracy}}</span><br>
+                            </div>
+                        </template>
+                        <template slot="new" slot-scope="data">
+                            <div v-if="data.item.type === 'community'">
+                                <strong>Comunidad</strong>:&nbsp;
+                                <select v-model="clientCommunities.selectedCommunity">
+                                    <option v-bind:value="''">Please select an option</option>
+                                    <option v-for="option in clientCommunities.options" v-bind:value="option">
+                                        {{ option.community }}
+                                    </option>
+                                </select><br/>
+                                <div v-if="clientCommunities.selectedCommunity !== ''">
+                                    <strong>Municipio</strong>:<span>{{clientCommunities.selectedCommunity.municipality}}</span><br>
+                                    <strong>Departamento</strong>:<span>{{clientCommunities.selectedCommunity.department}}</span><br>
+                                </div>
+                            </div>
+                            <div v-if="data.item.type === 'phone'">
+                                {{data.item.new.phone}}
+                            </div>
+                            <div v-if="data.item.type === 'GPS'">
+                                <strong>Latitud</strong>:<span>{{data.item.new.latitude}}</span><br>
+                                <strong>Longitud</strong>:<span>{{data.item.new.longitude}}</span><br>
+                                <strong>Altitud</strong>:<span>{{data.item.new.altitude}}</span><br>
+                                <strong>Precision</strong>:<span>{{data.item.new.accuracy}}</span><br>
+                                <strong>Altitud precision</strong>:<span>{{data.item.new.alt_accuracy}}</span><br>
+                            </div>
+                        </template>
+                        <template slot="accepted" slot-scope="data">
+                            <button style="padding:5px 15px;background:rgb(0,164,0);color:white;font-size:1em;outline:none;border:0;border-radius:5px;"
+                                    v-if="items[data.index].accepted"
+                                    @click="items[data.index].accepted = !items[data.index].accepted">
+                                <font-awesome-icon :icon="['far', 'check-square']"/>
+                            </button>
+                            <button style="padding:5px 15px;background:none;font-size:1em;outline:none;border:0;;border-radius:5px;"
+                                    v-if="!items[data.index].accepted"
+                                    @click="items[data.index].accepted = !items[data.index].accepted">
+                                <font-awesome-icon :icon="['far', 'square']"/>
+                            </button>
+                        </template>
+                    </b-table>
                 </b-card-body>
             </b-card>
             <b-card>
-                <h3><font-awesome-icon icon="map-marker-alt" style="font-size:0.8em" />&nbsp;Ubicacion</h3>
+                <h3>
+                    <font-awesome-icon icon="map-marker-alt" style="font-size:0.8em"/>&nbsp;Ubicacion
+                </h3>
                 <b-card-body>
                     <div id='map' style="height:400px"></div>
                 </b-card-body>
             </b-card>
             <b-card>
-                <h3><font-awesome-icon icon="image" style="font-size:0.8em" />&nbsp;Fotografias</h3>
+                <h3>
+                    <font-awesome-icon icon="image" style="font-size:0.8em"/>&nbsp;Fotografias
+                </h3>
                 <b-card-body>
-                    <b-table :items="mediaItems" :fields="fields" >
+                    <b-table :items="mediaItems" :fields="fields">
                         <template slot="old" slot-scope="data">
                             <span v-for="picture of data.item.old" style="margin:10px">
                                 <b-button v-for="(value, key) in picture"
@@ -88,12 +102,12 @@
                             <button style="padding:5px 15px;background:rgb(0,164,0);color:white;font-size:1em;outline:none;border:0;border-radius:5px;"
                                     v-if="mediaItems[data.index].accepted"
                                     @click="mediaItems[data.index].accepted = !mediaItems[data.index].accepted">
-                                <font-awesome-icon  :icon="['far', 'check-square']"/>
+                                <font-awesome-icon :icon="['far', 'check-square']"/>
                             </button>
                             <button style="padding:5px 15px;background:none;font-size:1em;outline:none;border:0;;border-radius:5px;"
                                     v-if="!mediaItems[data.index].accepted"
                                     @click="mediaItems[data.index].accepted = !mediaItems[data.index].accepted">
-                                <font-awesome-icon :icon="['far', 'square']" />
+                                <font-awesome-icon :icon="['far', 'square']"/>
                             </button>
                         </template>
                     </b-table>

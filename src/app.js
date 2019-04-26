@@ -19,7 +19,7 @@ export default {
   data: () => ({
     client: {
       "_id": "000081698abba8abdd7318d32a388204",
-      "_rev": "2840-13b982ee9c0f016e1accd0d707f23aa2",
+      "_rev": "2841-a5e7e7f3ceba392995fe2bf2bf5314f8",
       "|doctype": "client",
       "|location": "gtm-pet",
       "#community": "4389192fc1c887d0acbf7233207e88c2",
@@ -255,7 +255,13 @@ export default {
     fields: ['type', 'old', 'new', 'accepted'],
     items: [],
     mediaItems: [],
-    modalImageUrl: ''
+    modalImageUrl: '',
+    clientCommunities: {
+      options: [],
+      selectedCommunity: '',
+      selectedAl1: '',
+      selectedAl2: '',
+    }
   }),
   methods: {
     save() {
@@ -279,6 +285,14 @@ export default {
             case 'phone':
               data = {...data, telephone: v.new.phone};
               break;
+            case 'community':
+              if (this.newClient.location
+                && this.clientCommunities.selectedCommunity === '' ) {
+                //error message -> selected community
+              } else {
+                data = {...data, "#community": this.clientCommunities.selectedCommunity.community_id}
+              }
+              break;
           }
         });
       // image items
@@ -290,7 +304,7 @@ export default {
               if(typeof mediaObj[mk] === 'object') {
                 _attachments.push(mk);
               } else if (typeof mediaObj[mk] === 'string'){
-                if(!data.media) data.media = {...this.client.media};
+                if (!data.media) data.media = {...this.client.media};
                 data.media[mk] = mediaObj[mk];
               }
             }
@@ -300,7 +314,6 @@ export default {
       let username = config.couchbase.username;
       let password = config.couchbase.password;
       let url = config.couchbase.endpoints.updateCustomer + this.client._id;
-      console.log(_attachments);
       this.saveAttachments(_attachments).then(() =>{
         Vue.axios({
           method: 'put',
@@ -340,7 +353,7 @@ export default {
       this.modalImageUrl = 'https://www.publicdomainpictures.net/pictures/20000/nahled/funny-cat-871298226790TvQ.jpg';
       this.$refs['image-modal'].show();
     },
-    saveAttachments(attachments){
+    saveAttachments(attachments) {
       return new Promise(((resolve, reject) => {
         async.eachSeries(attachments,  (attachment, cb) => {
             let getUrl = `${config.couchbase.endpoints.maindb}${this.newClient._id}/${attachment}`;
@@ -380,6 +393,14 @@ export default {
     let arr = [];
     let newClient = this.newClient;
     if (newClient.location) {
+      Vue.axios({
+        method: 'get',
+        url: `http://localhost:3001/v1/communities/lookup?al1=${newClient.location.al1.name}&al2=${newClient.location.al2.name}&community_name=${newClient.location.community_name}`
+      }).then((r)=> {
+        console.log(r);
+        this.clientCommunities.options = r.data.body;
+      })
+        .catch((e) => console.error(e));
       let communityObject = {
         type: 'community',
         accepted: false,
